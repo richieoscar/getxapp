@@ -14,6 +14,33 @@ class ContentPage extends StatefulWidget {
 
 class _ContentPageState extends State<ContentPage> {
 
+  List info =[];
+  List recent =[];
+
+  void _readData() async{
+
+    //How to load a  json file
+    await DefaultAssetBundle.of(context).loadString("json/recent.json").then((value){
+          setState(() {
+            recent = json.decode(value);
+          });
+      });
+
+      await DefaultAssetBundle.of(context)
+        .loadString("json/detail.json")
+        .then((value) {
+      setState(() {
+        info = json.decode(value);
+      });
+    });
+  }
+
+  @override
+  void initState(){
+      _readData();
+      super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double height=MediaQuery.of(context).size.height;
@@ -62,7 +89,7 @@ class _ContentPageState extends State<ContentPage> {
                           Text(
                             "Top Level",
                             style: TextStyle(
-                                color:Color(0xFFfdebb2),
+                                color:Color(0xFF69c5df),
                                 fontSize: 12,
                                 decoration: TextDecoration.none
                             ),
@@ -109,7 +136,7 @@ class _ContentPageState extends State<ContentPage> {
                     Text(
                       "Show all",
                       style: TextStyle(
-                          color:Color(0xFFcfd5b3),
+                          color:Colors.black38,
                           fontSize: 15,
                           decoration: TextDecoration.none
                       ),
@@ -124,7 +151,7 @@ class _ContentPageState extends State<ContentPage> {
                           color: Color(0xFFfdc33c)
                       ),
                       child: GestureDetector(
-
+                          child:Icon(Icons.arrow_forward_ios, color:Colors.white)
                       ),
                     )
                   ],
@@ -136,11 +163,20 @@ class _ContentPageState extends State<ContentPage> {
                 height: 220,
                 child: PageView.builder(
                     controller: PageController(viewportFraction: 0.88),
-                    itemCount: 4,
+                    itemCount: info.length,
                     itemBuilder: (_, i){
                       return GestureDetector(
 
-
+                          onTap: (){
+                            Get.toNamed("/detail", arguments:{
+                              "title":info[i]["title"],
+                              "text":info[i]["text"],
+                              "name":info[i]["name"],
+                              "img":info[i]["img"],
+                              "time":info[i]["time"],
+                              "prize":info[i]["prize"]
+                            });
+                          },
                         child: Container(
                           padding: const EdgeInsets.only(left: 20, top: 20),
                           height: 220,
@@ -156,7 +192,7 @@ class _ContentPageState extends State<ContentPage> {
                                   child:Row(
                                     children: [
                                       Text(
-                                        "Title",
+                                      info[i]["title"],
                                         style: TextStyle(
                                             fontSize: 30,
                                             fontWeight: FontWeight.w500,
@@ -171,10 +207,10 @@ class _ContentPageState extends State<ContentPage> {
                               Container(
                                 width: width,
                                 child: Text(
-                                  "Text",
+                                  info[i]["text"],
                                   style: TextStyle(
-                                      fontSize: 20,
-                                      color:Color(0xFFb8eefc)
+                                      fontSize: 18,
+                                      color:Colors.white60
                                   ),
                                 ),
                               ),
@@ -192,7 +228,7 @@ class _ContentPageState extends State<ContentPage> {
                                             borderRadius: BorderRadius.circular(25),
                                             image: DecorationImage(
                                                 image: AssetImage(
-                                                    "img/background.jpg"
+                                                    info[i]["img"]
                                                 ),
                                                 fit: BoxFit.cover
                                             )
@@ -228,7 +264,7 @@ class _ContentPageState extends State<ContentPage> {
                     Text(
                       "Show all",
                       style: TextStyle(
-                          color:Color(0xFFcfd5b3),
+                          color:Colors.black38,
                           fontSize: 15,
                           decoration: TextDecoration.none
                       ),
@@ -243,7 +279,8 @@ class _ContentPageState extends State<ContentPage> {
                           color: Color(0xFFfdc33c)
                       ),
                       child: GestureDetector(
-
+                        onTap: ()=>Get.toNamed("/recent"),
+                        child: Icon(Icons.arrow_forward_ios, color: Colors.white,)
                       ),
                     )
                   ],
@@ -256,7 +293,7 @@ class _ContentPageState extends State<ContentPage> {
                       child: ListView.builder(
                           shrinkWrap: true,
                           scrollDirection: Axis.vertical,
-                          itemCount: 4,
+                          itemCount: recent.length,
                           itemBuilder: (_, i){
                             return Container(
                               width: width,
@@ -271,9 +308,9 @@ class _ContentPageState extends State<ContentPage> {
                                 child: Row(
                                   children: [
                                     CircleAvatar(
-                                      radius:40,
+                                      radius:25,
                                       backgroundImage: AssetImage(
-                                          "img/background.jpg"
+                                        recent[i]["img"]
                                       ),
                                     ),
                                     SizedBox(width: 10,),
@@ -284,8 +321,9 @@ class _ContentPageState extends State<ContentPage> {
                                         Text(
                                           "Status",
                                           style: TextStyle(
-                                              color:Color(0xFFfdebb2),
+                                              color:Color(0xFFfdc33c),
                                               fontSize: 12,
+                                              fontWeight: FontWeight.bold,
                                               decoration: TextDecoration.none
                                           ),
                                         ),
@@ -293,11 +331,11 @@ class _ContentPageState extends State<ContentPage> {
                                         SizedBox(
                                           width: 170,
                                           child: Text(
-                                            "Text",
+                                            recent[i]["text"],
 
                                             style: TextStyle(
                                                 color:Color(0xFF3b3f42),
-                                                fontSize: 18,
+                                                fontSize: 16,
                                                 decoration: TextDecoration.none
                                             ),
                                           ),
@@ -311,7 +349,7 @@ class _ContentPageState extends State<ContentPage> {
                                       height: 70,
 
                                       child: Text(
-                                        "Time",
+                                        recent[i]["time"],
                                         style: TextStyle(
                                             fontSize: 10,
                                             decoration: TextDecoration.none,

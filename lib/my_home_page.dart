@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
                       ),),
-                      onPressed: ()=>Container(),
+                      onPressed: ()=>Get.to(()=>ContentPage()),
                       child: Text(
                         "Get started",
                         style: TextStyle(
